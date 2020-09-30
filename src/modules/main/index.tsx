@@ -47,6 +47,16 @@ export default function Main() {
                     </form>
                 </div>
             </div>
+
+            <div className="container">
+                <div className="list-items">
+                    <div className="card">
+                        <h2>Title</h2>
+                        <p>Description</p>
+                        <a href="http://">detalhes</a>
+                    </div>
+                </div>
+            </div>
         </>
     )
 }

@@ -8,5 +8,23 @@
 }
 
 .container {
-    margin: 16px 2px 10px 30px;
+    margin: 16px 16px 16px 16px;
+}
+
+.list-items {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.list-items>.card {
+    flex: 1 1 250px;
+}
+
+.card {
+    border: solid 1px cornflowerblue;
+    border-radius: 8px;
+    margin: 16px;
+    padding: 16px;
+    min-width: 250px;
+    max-width: 400px;
 }
