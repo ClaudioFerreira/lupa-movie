@@ -28,3 +28,14 @@
     min-width: 250px;
     max-width: 400px;
 }
+
+.card>img {
+    max-height: 200px;
+}
+
+.empty-list {
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
