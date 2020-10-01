@@ -22,9 +22,20 @@ export default function Main() {
     const [show, setShow] = useState(false)
     const handleClose = () => setShow(false)
 
-    function handleShow(indexOfItem: number) {
-        setModalDetail(itens[indexOfItem])
-        setShow(true)
+    async function handleShow(imdbID: string) {
+
+        await api.get(``, {
+            params: {
+                type: filme ? 'movie' : 'series',
+                i: imdbID
+            }
+        })
+            .then(response => {
+                console.log(response.data)
+                setModalDetail(response.data)
+                console.log(modalDetail)
+                setShow(true)
+            })
     }
 
     function handleSelect() {
@@ -38,14 +49,11 @@ export default function Main() {
             await api.get(``, {
                 params: {
                     type: filme ? 'movie' : 'series',
-                    t: title
+                    s: title
                 }
             })
                 .then(response => {
-                    console.log(response.data)
-                    setItens([response.data])
-                    console.log(itens.length)
-                    console.log(itens)
+                    setItens(response.data.Search)
                 })
     }
 
@@ -98,17 +106,27 @@ export default function Main() {
             <Container>
                 {itens.length > 0 ? (
                     <div className="list-items">
-                        {itens.map((item, index) => (
+                        {itens.map(item => (
                             <div className="card" key={item.imdbID}>
-                                <div className="col">
-                                    <img src={item.Poster} alt={`${item.Title} - Poster`} />
-                                </div>
-                                <div className="col">
-                                    <h4> {item.Title} </h4>
-                                    <h5>Ano: {item.Year} | Diretor: {item.Director}</h5>
-                                    <p>Genero: {item.Genre}</p>
-                                    <a onClick={_ => handleShow(index)} >Detalhes</a>
-                                </div>
+                                {
+                                    item?.Poster !== 'N/A' ? (
+                                        <img src={item?.Poster} alt={`poster - ${item?.Title}`} />
+                                    ) : (
+                                            <div className="empty-list">
+                                                <img src={EmptyImage} alt="empty list" />
+                                            </div>
+                                        )
+                                }
+                                <br />
+                                <h4> {item.Title} </h4>
+                                <h5>Year: {item.Year} </h5>
+                                <Button
+                                    variant="outline-dark"
+                                    onClick={_ => handleShow(item.imdbID)}
+                                    block
+                                >
+                                    Detail
+                                </Button>
                             </div>
                         ))}
                     </div>
@@ -130,8 +148,17 @@ export default function Main() {
                 </Modal.Header>
                 <Modal.Body>
                     <div className="row">
+                        {console.log(modalDetail)}
                         <div className="col">
-                            <img src={modalDetail?.Poster} alt={`poster - ${modalDetail?.Title}`} />
+                            {
+                                modalDetail?.Poster !== 'N/A' ? (
+                                    <img src={modalDetail?.Poster} alt={`poster - ${modalDetail?.Title}`} />
+                                ) : (
+                                        <div className="empty-list">
+                                            <img src={EmptyImage} alt="empty list" />
+                                        </div>
+                                    )
+                            }
                         </div>
                         <div className="col">
                             <p>Director: {modalDetail?.Director}</p>
