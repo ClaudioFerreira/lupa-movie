@@ -1,11 +1,5 @@
 
 export interface Movie {
-    // Title: string,
-    // Year: string,
-    // Director: string,
-    // Genre: string,
-
-
     Title: string
     Year: string
     Rated: string
@@ -31,6 +25,4 @@ export interface Movie {
     Production: string
     Website: string
     Response: string
-
-
 }
