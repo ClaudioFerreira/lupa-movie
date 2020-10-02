@@ -53,7 +53,6 @@ export default function Main() {
             </Modal.Header>
             <Modal.Body>
                 <div className="row">
-                    {console.log(modalDetail)}
                     <div className="col">
                         {
                             modalDetail?.Poster !== 'N/A' ? (
