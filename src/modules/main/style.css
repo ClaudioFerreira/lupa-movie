@@ -16,6 +16,13 @@
     margin: 8px;
 }
 
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    margin-top: 16px;
+}
+
 .list-items {
     display: flex;
     flex-wrap: wrap;
