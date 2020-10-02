@@ -11,6 +11,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import ToggleButton from 'react-bootstrap/ToggleButton'
 import Container from 'react-bootstrap/Container'
 import Pagination from 'react-bootstrap/Pagination'
+import Load from '../../shared/components/load'
 
 export default function Main() {
 
@@ -18,6 +19,7 @@ export default function Main() {
     const [movie, setMovie] = useState(true)
     const [itens, setItens] = useState<Movie[]>([])
     const [modalDetail, setModalDetail] = useState<Movie>()
+    const [load, setLoad] = useState(false)
 
     const [page, setPage] = useState(1)
     const [totalPages, setTotalPages] = useState(0)
@@ -77,6 +79,7 @@ export default function Main() {
 
 
     async function handleShowDetail(imdbID: string) {
+        setLoad(true)
         await api.get(``, {
             params: {
                 type: movie ? 'movie' : 'series',
@@ -84,9 +87,8 @@ export default function Main() {
             }
         })
             .then(response => {
-                console.log(response.data)
+                setLoad(false)
                 setModalDetail(response.data)
-                console.log(modalDetail)
                 setShow(true)
             })
     }
@@ -99,6 +101,7 @@ export default function Main() {
         event.preventDefault()
 
         if (title !== '') {
+            setLoad(true)
             setPage(1)
 
             await api.get(``, {
@@ -110,6 +113,7 @@ export default function Main() {
                 .then(response => {
                     setTotalPages(Math.ceil(response.data.totalResults / response.data.Search.length))
                     setItens(response.data.Search)
+                    setLoad(false)
                 })
         }
     }
@@ -146,6 +150,7 @@ export default function Main() {
     }
 
     async function loadItems(currentPage: number) {
+        setLoad(true)
         await api.get(``, {
             params: {
                 type: movie ? 'movie' : 'series',
@@ -155,6 +160,7 @@ export default function Main() {
         })
             .then(response => {
                 setItens(response.data.Search)
+                setLoad(false)
             })
     }
 
@@ -204,48 +210,48 @@ export default function Main() {
                 </Container>
             </div>
 
-            <Container>
-
-                {totalPages !== 0 &&
-                    <Pages />
-                }
-
-                {itens.length > 0 ? (
-                    <>
-                        <div className="list-items">
-                            {itens.map(item => (
-                                <div className="card" key={item.imdbID}>
-                                    {
-                                        item?.Poster !== 'N/A' ? (
-                                            <img src={item?.Poster} alt={`poster - ${item?.Title}`} />
-                                        ) : (
-                                                <div className="empty-list">
-                                                    <img src={EmptyImage} alt="empty list" />
-                                                </div>
-                                            )
-                                    }
-                                    <br />
-                                    <h4> {item.Title} </h4>
-                                    <h5>Year: {item.Year} </h5>
-                                    <Button
-                                        variant="outline-dark"
-                                        onClick={_ => handleShowDetail(item.imdbID)}
-                                        block
-                                    >
-                                        Detail
-                                </Button>
-                                </div>
-                            ))}
-                        </div>
+            {load ? (<Load />) : (
+                <Container>
+                    {totalPages !== 0 &&
                         <Pages />
-                    </>
-                ) : (
-                        <div className="empty-list">
-                            <img src={EmptyImage} alt="empty list" />
-                        </div>
-                    )}
-            </Container>
+                    }
 
+                    {itens.length > 0 ? (
+                        <>
+                            <div className="list-items">
+                                {itens.map(item => (
+                                    <div className="card" key={item.imdbID}>
+                                        {
+                                            item?.Poster !== 'N/A' ? (
+                                                <img src={item?.Poster} alt={`poster - ${item?.Title}`} />
+                                            ) : (
+                                                    <div className="empty-list">
+                                                        <img src={EmptyImage} alt="empty list" />
+                                                    </div>
+                                                )
+                                        }
+                                        <br />
+                                        <h4> {item.Title} </h4>
+                                        <h5>Year: {item.Year} </h5>
+                                        <Button
+                                            variant="outline-dark"
+                                            onClick={_ => handleShowDetail(item.imdbID)}
+                                            block
+                                        >
+                                            Detail
+                                </Button>
+                                    </div>
+                                ))}
+                            </div>
+                            <Pages />
+                        </>
+                    ) : (
+                            <div className="empty-list">
+                                <img src={EmptyImage} alt="empty list" />
+                            </div>
+                        )}
+                </Container>
+            )}
             <ModalDetails />
 
         </>
